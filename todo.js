@@ -1,79 +1,152 @@
 // cannot use 'form' because already used in greeting.js
 
-const toDoForm = document.querySelector(".js-toDoForm"); 
-const toDoInput = toDoForm.querySelector("input");
-const toDoList = document.querySelector(".js-toDoList");
+const todoForm = document.querySelector(".js-toDoForm");
+const todoInput = todoForm.querySelector("input");
+const pending = document.querySelector(".pending");
+const finished = document.querySelector(".finished");
 
-const TODOS_LS = 'toDos';
-let toDos = [];
+// localStorage KEY names
+const PENDING_LS = "pending list";
+const FIN_LS = "finished list";
 
-function deleteToDo(event){
-    // console.dir(event.target);  --> find out info inside button
-    // console.log(event.target.parentNode);
-    // console.log(event.target.parentElement); --> same as above
+// localStorage VALUES
+let pendingTodos = [];
+let finishedTodos = [];
 
-    const btn = event.target;
-    const li = btn.parentNode;
-    toDoList.removeChild(li);
-    const cleanToDos = toDos.filter(function(toDo){
-        // li.id : string type
-        // toDo.id : num type
-        return toDo.id !== parseInt(li.id);
-    }); 
-    // filter: runs through every item in the array, if an element passes the inner function conditions, return that element
-    toDos = cleanToDos; // new array: cleanToDos
-    saveToDo();  // save updated toDos array
+function saveToPending() {
+  localStorage.setItem(PENDING_LS, JSON.stringify(pendingTodos));
 }
-// you cannot save object to localStorage
-// can only save string: JSON.stringify
-function saveToDo() {
-    localStorage.setItem(TODOS_LS, JSON.stringify(toDos));  // save string version of json object
-} 
 
-function paintToDo(text){
-    const li = document.createElement("li");
-    const delBtn = document.createElement("button");
-    delBtn.innerText = "❌";
-    delBtn.addEventListener("click", deleteToDo);
+function saveToFinished() {
+  localStorage.setItem(FIN_LS, JSON.stringify(finishedTodos));
+}
 
-    const span = document.createElement("span");
-    span.innerText = text;
-    const newId = toDos.length + 1;
+// create li with btn
+function buildGenericLi(todo, parentList, parentName) {
+  let newId = parentList.length + 1;
+  if (parentList.length !== 0) {
+    // if 문 체크 안하는 경우, 로딩이 미처 안되어서 property access 를 못함.
+    const lastItem = parentList[parentList.length - 1];
+    newId = lastItem.id + 1;
+  }
+  const li = document.createElement("li");
+  const textTodo = document.createTextNode(todo);
+  const delBtn = document.createElement("button"); // delete
+  li.id = newId;
+  delBtn.innerText = "🙅";
+  li.appendChild(delBtn);
+  li.appendChild(textTodo);
+  delBtn.addEventListener("click", deleteTodo);
 
-    li.appendChild(delBtn);
-    li.appendChild(span);
-    li.id = newId;
-    toDoList.appendChild(li);
+  let extraBtn;
+  if (parentName === "pending") {
+    extraBtn = document.createElement("button");
+    extraBtn.innerText = "🙆‍";
+    extraBtn.addEventListener("click", moveToFinished);
+  } else if (parentName === "finished") {
+    extraBtn = document.createElement("button"); // back to Pending
+    extraBtn.innerText = "💁";
+    extraBtn.addEventListener("click", moveToPending);
+  }
 
-    const toDoObj = {
-        text: text,
-        id: newId
-    };
-    toDos.push(toDoObj);
-    saveToDo();
+  li.insertBefore(extraBtn, delBtn);
+  return li;
+}
+
+// paint pending list
+function createPending(todo) {
+  const li = buildGenericLi(todo, pendingTodos, "pending");
+  pending.appendChild(li);
+  const todoObj = { content: todo, id: parseInt(li.id) }; // save as an object, not string
+  pendingTodos.push(todoObj);
+  saveToPending(); // save current [] to localStorage
+}
+
+// paint finished list
+function createFinished(todo) {
+  const li = buildGenericLi(todo, finishedTodos, "finished");
+  finished.appendChild(li);
+  const doneObj = { content: todo, id: parseInt(li.id) };
+  finishedTodos.push(doneObj);
+  saveToFinished();
+}
+
+function deleteTodo(event) {
+  const li = event.target.parentNode; // entire <li> tag
+  const className = event.target.parentNode.parentNode.className; // ul class=pending or finished
+
+  let toDos = [];
+  if (className === "pending") {
+    toDos = pendingTodos; // update global variable array
+    pending.removeChild(li); // remove from html view
+  } else if (className === "finished") {
+    toDos = finishedTodos;
+    finished.removeChild(li);
+  }
+
+  // delete according index
+  const cleanTodos = toDos.filter(function(todo) {
+    return todo.id !== parseInt(li.id, 10);
+  });
+
+  if (className === "pending") {
+    pendingTodos = cleanTodos;
+    saveToPending();
+  } else if (className === "finished") {
+    finishedTodos = cleanTodos;
+    saveToFinished();
+  }
+}
+
+function moveToFinished(event) {
+  const li = event.target.parentNode; // entire <li> tag
+  const thisTodo = pendingTodos.find(function(todo) {
+    return todo.id === parseInt(li.id);
+  });
+  deleteTodo(event);
+  createFinished(thisTodo.content);
+}
+
+function moveToPending(event) {
+  const li = event.target.parentNode;
+  const thisTodo = finishedTodos.find(function(todo) {
+    return todo.id === parseInt(li.id);
+  });
+
+  deleteTodo(event);
+  createPending(thisTodo.content);
+}
+
+// load data from localStorage
+function loadTodos() {
+  const loadPending = localStorage.getItem(PENDING_LS);
+  const loadFinished = localStorage.getItem(FIN_LS);
+
+  if (loadPending !== null) {
+    const parsedPending = JSON.parse(loadPending);
+    for (let i = 0; i < parsedPending.length; i++) {
+      createPending(parsedPending[i].content);
+    }
+  }
+
+  if (loadFinished !== null) {
+    const parsedFinished = JSON.parse(loadFinished);
+    for (let i = 0; i < parsedFinished.length; i++) {
+      createFinished(parsedFinished[i].content);
+    }
+  }
 }
 
 function handleSubmit(event) {
-    event.preventDefault();
-    const currentValue = toDoInput.value;
-    paintToDo(currentValue);
-    toDoInput.value ="";
-}
-
-function loadToDos() {
-    const loadedToDos = localStorage.getItem(TODOS_LS); 
-    if (loadedToDos !== null) {
-        const parsedToDos = JSON.parse(loadedToDos);
-        parsedToDos.forEach(function(toDo){
-            // console.log(toDo, toDo.text);
-            paintToDo(toDo.text);
-        })
-    } 
+  event.preventDefault(); // submit when enter btn pressed
+  const newTodo = todoInput.value;
+  createPending(newTodo);
+  todoInput.value = "";
 }
 
 function init() {
-    loadToDos();
-    toDoForm.addEventListener("submit", handleSubmit);
+  loadTodos();
+  todoForm.addEventListener("submit", handleSubmit);
 }
 
 init();

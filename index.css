@@ -1,23 +1,16 @@
-.clicked {
-    color: grey;
-}
 
-.form,
-.greeting {
-    display: none;
-}
-
-.showing {
-    display: block;
-}
 
 body {
    background-color: #2c3e50;
    color: white;
+   font-size: 1.2em;
+   font-family: 'Merienda One', cursive;
 }
 
-.btn {
-    cursor: pointer;
+div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes fadeIn {
@@ -29,6 +22,19 @@ body {
     }
 }
 
+header{
+  position: fixed;
+  right: -5px;
+  top: 0;
+  padding-top: 1rem;
+  width: 100%;
+}
+
+.js-date{
+  font-size: 2rem;
+  margin-top: 4rem;
+}
+
 .bgImage{
     position: absolute;
     top:0;
@@ -37,4 +43,82 @@ body {
     height:100%;
     z-index: -1;
     animation: fadeIn .5s linear;
+}
+
+.askName,
+.greeting {
+    display: none;
+}
+
+.showing {
+    /* display: block; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7%;
+    font-size: 3rem;
+}
+
+input::placeholder {
+  font-family: "Montserrat", sans-serif;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+form > input {
+  font-size: 1.5rem;
+  align-content: center;
+  font-family: "Montserrat", sans-serif;
+  width: 70%;
+  height: 30%;
+  background-color: rgba(50, 50, 50, 0.5);
+  border: none;
+  border-radius: 100px;
+  color: white;
+  text-align: center;
+}
+
+form {
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1%;
+}
+
+.toDoList{
+  display: inline-block;
+  width: 50%;
+  float: left;
+}
+
+ul > li {
+  list-style: none;
+  padding-left: 20%;
+}
+
+ul > h2 {
+  font-size: 1.2em;
+  font-family: 'Comfortaa', cursive;
+  text-align: center;
+}
+
+button{
+  border: 0px;
+  border-radius: 10px;
+  background-color: transparent;
+  font-size: 1.8em;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding-bottom: 2em;
+    text-align: center;
+}
+
+a{
+  color: #ffffff;
 }

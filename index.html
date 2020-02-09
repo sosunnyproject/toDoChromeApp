@@ -6,26 +6,63 @@
     <title>chrome app</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Sigmar+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Quicksand&display=swap"
+      rel="stylesheet"
+    />
+    <link
+       href="https://fonts.googleapis.com/css?family=Comfortaa|Handlee|Merienda+One|Montserrat|Pacifico|Sacramento&display=swap"
+       rel="stylesheet"
+     />
 </head>
 <body>
-    <div class = "js-clock">
-        <h1></h1>
+    <header class="js-weather" id="text2"></header>
+    <!-- time -->
+    <div class = "js-date" id="text1">
+      <h1></h1>
     </div>
-    <form class = "js-form form">
-        <input type = "text" placeholder="What is your name?" />
+    <div class = "js-clock">
+      <h2></h2>
+    </div>
+
+    <!-- color change     -->
+    <div>
+      <button id="colorChange">🎨</button>
+    </div>
+
+    <!-- name -->
+    <form class = "js-form askName">
+        <input type = "text"  placeholder="what is your name" />
     </form>
-    <h4 class="js-greeting greeting"></h4>
+    <div>
+      <h2 class="js-greeting greeting" id="text3"></h2>
+    </div>
+    <!-- todolist -->
     <form class="js-toDoForm">
-        <input type ="text" placeholder="Write to do list" />
+        <input type ="text" placeholder="what you got today" />
     </form>
-    <ul class="js-toDoList"></ul>
-    <span class="js-weather"></span>
-    
+    <div class ="toDoList" id="text4">
+      <ul class="pending">
+        <h2>Pending</h2>
+      </ul>
+    </div>
+    <div class="toDoList" id="text5">
+      <ul class="finished">
+        <h2>Finished</h2>
+      </ul>
+    </div>
+    <footer>
+      <a href="https://github.com/sosunnyproject">© 2020 SOSUNNYPROJECT</a>
+  </footer>
     <script src="clock.js"></script>
     <script src="greeting.js"></script>
     <script src="todo.js"></script>
     <script src="background.js"></script>
     <script src="weather.js"></script>
-
+    <script src="color.js"></script>
 </body>
-</html> 
+</html>

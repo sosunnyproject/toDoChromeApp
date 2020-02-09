@@ -2,7 +2,7 @@ const form = document.querySelector(".js-form");
 let input = form.querySelector("input");
 let greeting = document.querySelector(".js-greeting");
 
-const USER_LS = "currentUser", 
+const USER_LS = "currentUser",
     SHOWING_CN = "showing";
 
 // save submitted name to localStorage
@@ -36,17 +36,14 @@ function paintGreeting(text) {
 function loadName() {
     const currentUser = localStorage.getItem(USER_LS);
     if(currentUser === null) {
-        // she is not
         askForName();
     } else {
-        // she is
         paintGreeting(currentUser);
     }
 }
 
 function init() {
     loadName();
-
 }
 
 init();
